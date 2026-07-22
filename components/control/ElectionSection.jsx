@@ -19,8 +19,29 @@ export default function ElectionSection({ token }) {
   const [resetPassword, setResetPassword] = useState('');
   const [resetBusy, setResetBusy] = useState(false);
 
+  const [eventTitle, setEventTitle] = useState('');
+  const [titleBusy, setTitleBusy] = useState(false);
+
   function loadState() {
-    apiFetch('/api/election/state').then(setState).catch(() => {});
+    apiFetch('/api/election/state').then((s) => {
+      setState(s);
+      setEventTitle(s.eventTitle || '');
+    }).catch(() => {});
+  }
+
+  async function saveEventTitle() {
+    if (!eventTitle.trim()) { showToast('กรุณากรอกชื่องาน', 'danger'); return; }
+    setTitleBusy(true);
+    try {
+      await apiFetch('/api/admin/election/event-title', {
+        method: 'POST', token, body: { event_title: eventTitle.trim() },
+      });
+      showToast('บันทึกชื่องานแล้ว ระบบขึ้นจอถ่ายทอดสดทันที', 'success');
+    } catch (err) {
+      showToast(err.message, 'danger');
+    } finally {
+      setTitleBusy(false);
+    }
   }
   function loadTally() {
     apiFetch('/api/admin/election/tally', { token }).then(setTally).catch(() => setTally(null));
@@ -115,6 +136,32 @@ export default function ElectionSection({ token }) {
     <div className="it-fade-in">
       <h3 className="fw-bold mb-1" style={{ color: 'var(--it-blue-dark)' }}>ควบคุมการเลือกตั้ง</h3>
       <p className="text-secondary mb-4">เปิด/ปิดระบบโหวต ควบคุมการนับคะแนน และประกาศผลอย่างเป็นทางการ</p>
+
+      <div className="card border-0 shadow-sm mb-4">
+        <div className="card-body">
+          <label className="form-label fw-semibold mb-1">ชื่องาน (แสดงบนจอถ่ายทอดสด / Overlay)</label>
+          <p className="text-secondary small mb-2">
+            ข้อความนี้จะขึ้นในกล่องสีขาวด้านบนของหน้า Overlay ทุกฉาก เปลี่ยนแล้วอัปเดตขึ้นจอทันทีแบบเรียลไทม์
+          </p>
+          <div className="d-flex flex-column flex-md-row gap-2">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="เช่น เลือกตั้งประธานนักเรียน นักศึกษา แผนก IT ประจำปีการศึกษา 2569"
+              value={eventTitle}
+              onChange={(e) => setEventTitle(e.target.value)}
+              maxLength={255}
+            />
+            <button
+              className="btn it-btn-primary px-4"
+              disabled={titleBusy}
+              onClick={saveEventTitle}
+            >
+              {titleBusy ? 'กำลังบันทึก...' : 'บันทึก'}
+            </button>
+          </div>
+        </div>
+      </div>
 
       <div className="row g-3 mb-4">
         <div className="col-md-4">

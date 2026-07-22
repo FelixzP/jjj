@@ -28,7 +28,7 @@ function useCountUp(target, duration = 800) {
   return value;
 }
 
-export default function TurnoutScene() {
+export default function TurnoutScene({ eventTitle }) {
   const [stats, setStats] = useState({ totalVoters: 0, votedCount: 0, percentage: 0 });
   const pulseControls = useAnimation();
 
@@ -52,6 +52,15 @@ export default function TurnoutScene() {
     <div className="overlay-root position-relative" style={{ background: 'linear-gradient(135deg, #0f766e 0%, #0891b2 40%, #2563eb 75%, #4338ca 100%)' }}>
       <OverlayBackdrop variant="colorful" />
       <div className="d-flex flex-column align-items-center text-center position-relative" style={{ zIndex: 1 }}>
+        {eventTitle && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+            className="fw-bold text-white mb-2"
+            style={{ fontSize: 'clamp(0.9rem, 1.8vw, 1.2rem)', textShadow: '0 4px 16px rgba(0,0,0,0.35)', maxWidth: '80vw' }}
+          >
+            {eventTitle}
+          </motion.div>
+        )}
         <motion.div
           initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
           className="d-flex align-items-center gap-2 px-4 py-2 mb-3"

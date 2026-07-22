@@ -6,7 +6,7 @@ import { apiFetch, API_URL } from '@/lib/api';
 import { getSocket } from '@/lib/socket';
 import OverlayBackdrop from './OverlayBackdrop';
 
-export default function CandidateCarouselScene() {
+export default function CandidateCarouselScene({ eventTitle }) {
   const [candidates, setCandidates] = useState([]);
   const [index, setIndex] = useState(0);
 
@@ -39,17 +39,28 @@ export default function CandidateCarouselScene() {
     <div className="overlay-root position-relative" style={{ background: 'linear-gradient(135deg, #4338ca 0%, #7c3aed 35%, #2563eb 70%, #0ea5e9 100%)' }}>
       <OverlayBackdrop variant="colorful" />
 
-      <motion.div
-        initial={{ opacity: 0, y: -14 }} animate={{ opacity: 1, y: 0 }}
-        className="position-absolute top-0 start-50 translate-middle-x mt-4 px-4 py-2 d-flex align-items-center gap-2"
-        style={{
-          background: 'linear-gradient(90deg, #f59e0b, #ec4899)', borderRadius: 999, zIndex: 2,
-          boxShadow: '0 10px 30px rgba(236,72,153,0.45)',
-        }}
-      >
-        <span style={{ fontSize: '1.2rem' }}>🗳️</span>
-        <span className="text-white fw-semibold" style={{ letterSpacing: 1 }}>แนะนำผู้สมัคร</span>
-      </motion.div>
+      <div className="position-absolute top-0 start-50 translate-middle-x mt-3 d-flex flex-column align-items-center" style={{ zIndex: 2 }}>
+        {eventTitle && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
+            className="fw-bold text-white mb-2 text-center"
+            style={{ fontSize: 'clamp(0.9rem, 1.8vw, 1.2rem)', textShadow: '0 4px 16px rgba(0,0,0,0.35)', maxWidth: '80vw' }}
+          >
+            {eventTitle}
+          </motion.div>
+        )}
+        <motion.div
+          initial={{ opacity: 0, y: -14 }} animate={{ opacity: 1, y: 0 }}
+          className="px-4 py-2 d-flex align-items-center gap-2"
+          style={{
+            background: 'linear-gradient(90deg, #f59e0b, #ec4899)', borderRadius: 999,
+            boxShadow: '0 10px 30px rgba(236,72,153,0.45)',
+          }}
+        >
+          <span style={{ fontSize: '1.2rem' }}>🗳️</span>
+          <span className="text-white fw-semibold" style={{ letterSpacing: 1 }}>แนะนำผู้สมัคร</span>
+        </motion.div>
+      </div>
 
       <AnimatePresence mode="wait">
         <motion.div

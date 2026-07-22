@@ -70,11 +70,7 @@ export default function RegisterPage() {
       if (photo) fd.append('photo', photo);
       if (policyFile) fd.append('policy_file', policyFile);
 
-      const res = await fetch(`${API_URL}/api/candidates`, {
-  method: 'POST',
-  body: fd,
-  headers: { 'ngrok-skip-browser-warning': 'true' },
-});
+      const res = await fetch(`${API_URL}/api/candidates`, { method: 'POST', body: fd });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'ส่งใบสมัครไม่สำเร็จ');
 
